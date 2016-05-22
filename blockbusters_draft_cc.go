@@ -7,7 +7,6 @@ import (
 	"strconv"
 
 	"github.com/hyperledger/fabric/core/chaincode/shim"
-
 )
 
 const   MANUFACTURER = "MANUFACTURER"
