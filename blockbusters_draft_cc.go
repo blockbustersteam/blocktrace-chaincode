@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"strconv"
 
 	"github.com/hyperledger/fabric/core/chaincode/shim"
+
 )
 
 const   MANUFACTURER = "MANUFACTURER"
@@ -31,14 +31,14 @@ type Item struct {
 	Id   			string  `json:"id"`
 	Name  			string  `json:"name"`
 	CurrentOwner  	string  `json:"currentOwner"`
-	Manufacturer	int 	`json:"manufacturer"`
+	Manufacturer	string 	`json:"manufacturer"`
 	Barcode	 		string 	`json:"barcode"`
 	Status			string 	`json:"status"`
 	Transactions 	[]Transaction `json:"transactions"`
 }
 
 type Transaction struct {
-	TransactionType	string  `json:"transactionType"`
+	TType			string  `json:"transactionType"`
 	NewOwner  		string  `json:"newOwner"`
 	Location		string 	`json:"location"`
 	VDate 			string   `json:"vDate"`
@@ -175,7 +175,7 @@ func (t *SimpleChaincode) getItemDetailsWithBarcode(stub *shim.ChaincodeStub, ba
 
 	}
 
-	return nil, "Item with this specific barcode does not exist"
+	return nil, errors.New("Item with this specific barcode does not exist")
 	
 }
 
@@ -284,7 +284,7 @@ func (t *SimpleChaincode) getCurrentOwnerItemsWithTxs(stub *shim.ChaincodeStub, 
 // 
 // type Transaction struct {
 // 	ItemID			string 	`json:"itemID"`
-// 	TransactionType	string  `json:"transactionType"`
+// 	TType 			string  `json:"transactionType"`
 // 	NewOwner  		string  `json:"newOwner"`
 // 	Quantity		int 	`json:"quantity"`
 // 	Location		string 	`json:"location"`
