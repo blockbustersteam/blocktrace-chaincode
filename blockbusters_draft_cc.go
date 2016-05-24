@@ -109,9 +109,10 @@ func (t *SimpleChaincode) Query(stub *shim.ChaincodeStub, function string, args 
 
 	if len(args) != 1 { return nil, errors.New("Incorrect number of arguments passed") }
 
-	if function != "getBatch" && function != "getAllBatches" && function != "getAllBatchesDetails" && function != "getNbItems"{
-		return nil, errors.New("Invalid query function name.")
-	}
+
+       if function != "getItemDetailsWithID" && function != "getItemDetailsWithBarcode" && function != "getCurrentOwnerItems" && function != "getCurrentOwnerItemsWithTxs" {
+               return nil, errors.New("Invalid query function name.")
+       }
 
 	if function == "getItemDetailsWithID" { return t.getItemDetailsWithID(stub, args[0]) }
 	if function == "getItemDetailsWithBarcode" { return t.getItemDetailsWithBarcode(stub, args[0]) }
