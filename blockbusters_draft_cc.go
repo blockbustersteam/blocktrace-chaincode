@@ -213,7 +213,7 @@ func (t *SimpleChaincode) getCurrentOwnerItems(stub *shim.ChaincodeStub, user st
 		json.Unmarshal(siAsBytes, &si)
 
 		// get items without transactions
-		if(si.CurrentOwner == user) {
+		if(si.CurrentOwner == user || si.Manufacturer == user) {
 			si.Transactions = nil
 			rai.Items = append(rai.Items,si); 
 		}
@@ -258,7 +258,7 @@ func (t *SimpleChaincode) getCurrentOwnerItemsWithTxs(stub *shim.ChaincodeStub, 
 		var si Item
 		json.Unmarshal(siAsBytes, &si)
 
-		if(si.CurrentOwner == user) {
+		if(si.CurrentOwner == user || si.Manufacturer == user) {
 			rai.Items = append(rai.Items,si); 
 		}
 
