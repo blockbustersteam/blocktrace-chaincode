@@ -6,7 +6,6 @@ import (
 	"fmt"
 
 	"github.com/hyperledger/fabric/core/chaincode/shim"
-
 )
 
 const   MANUFACTURER = "MANUFACTURER"
@@ -107,16 +106,17 @@ func (t *SimpleChaincode) Invoke(stub *shim.ChaincodeStub, function string, args
 // ============================================================================================================================
 func (t *SimpleChaincode) Query(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
 
-	if len(args) != 1 { return nil, errors.New("Incorrect number of arguments passed") }
+	if (len(args) != 1 && len(args) != 2) { return nil, errors.New("Incorrect number of arguments passed") }
 
 
-       if function != "getItemDetailsWithID" && function != "getItemDetailsWithBarcode" && function != "getCurrentOwnerItems" && function != "getCurrentOwnerItemsWithTxs" {
-               return nil, errors.New("Invalid query function name.")
-       }
+	if function != "getItemDetailsWithID" && function != "getItemDetailsWithBarcode" && function != "getCurrentOwnerItems" && function != "getCurrentOwnerItemsByStatus" && function != "getCurrentOwnerItemsWithTxs" {
+		return nil, errors.New("Invalid query function name.")
+	}
 
 	if function == "getItemDetailsWithID" { return t.getItemDetailsWithID(stub, args[0]) }
 	if function == "getItemDetailsWithBarcode" { return t.getItemDetailsWithBarcode(stub, args[0]) }
 	if function == "getCurrentOwnerItems" { return t.getCurrentOwnerItems(stub, args[0]) }
+	if function == "getCurrentOwnerItemsByStatus" { return t.getCurrentOwnerItemsByStatus(stub, args[0], args[1]) }
 	if function == "getCurrentOwnerItemsWithTxs" { return t.getCurrentOwnerItemsWithTxs(stub, args[0]) }
 
 	return nil, nil										
@@ -214,6 +214,51 @@ func (t *SimpleChaincode) getCurrentOwnerItems(stub *shim.ChaincodeStub, user st
 
 		// get items without transactions
 		if(si.CurrentOwner == user || si.Manufacturer == user) {
+			si.Transactions = nil
+			rai.Items = append(rai.Items,si); 
+		}
+
+	}
+
+	raiAsBytes, _ := json.Marshal(rai)
+
+	return raiAsBytes, nil
+	
+}
+
+// ============================================================================================================================
+// Get All Items owned by a specific user and status (without transactions)
+// ============================================================================================================================
+func (t *SimpleChaincode) getCurrentOwnerItemsByStatus(stub *shim.ChaincodeStub, user string, status string)([]byte, error){
+	
+	fmt.Println("Start find getCurrentOwnerItemsByStatus ")
+	fmt.Println("Looking for All Items for " + user + " with status: " + status);
+
+	//get the AllItems index
+	allIAsBytes, err := stub.GetState("allItems")
+	if err != nil {
+		return nil, errors.New("Failed to get all Items")
+	}
+
+	var res AllItems
+	err = json.Unmarshal(allIAsBytes, &res)
+	if err != nil {
+		return nil, errors.New("Failed to Unmarshal all Items")
+	}
+
+	var rai AllItemsDetails
+
+	for i := range res.Items{
+
+		siAsBytes, err := stub.GetState(res.Items[i])
+		if err != nil {
+			return nil, errors.New("Failed to get Item")
+		}
+		var si Item
+		json.Unmarshal(siAsBytes, &si)
+
+		// get items without transactions
+		if(si.CurrentOwner == user) && (si.Status == status) {
 			si.Transactions = nil
 			rai.Items = append(rai.Items,si); 
 		}
