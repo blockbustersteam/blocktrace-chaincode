@@ -455,7 +455,7 @@ func (t *SimpleChaincode) addScanCount(stub *shim.ChaincodeStub, args []string) 
 	}
 
 	//Update scan count
-	iAsBytes, err := stub.getState(args[0])
+	iAsBytes, err := stub.GetState(args[0])
 	if err != nil {
 		return nil, errors.New("Failed to get Item#" + args[0])
 	}
@@ -466,7 +466,7 @@ func (t *SimpleChaincode) addScanCount(stub *shim.ChaincodeStub, args []string) 
 	}
 
 	if itm.Status == STATUS_RETAILER {
-		var newCount int
+		var newCount Int
 		newCount.Add(strconv.Atoi(itm.ScanCount), 1)
 		itm.ScanCount = strconv.Itoa(newCount)
 	}
