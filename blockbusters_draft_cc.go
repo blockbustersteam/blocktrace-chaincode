@@ -464,9 +464,9 @@ func (t *SimpleChaincode) addScanCount(stub *shim.ChaincodeStub, args []string) 
 		return nil, errors.New("Failed to Unmarshal Item #" + args[0])
 	}
 
+	var newCount int
 	if itm.Status == STATUS_RETAILER {
-		var newCount int
-		newCount = strconv.Atoi(itm.ScanCount)
+		newCount, err = strconv.Atoi(itm.ScanCount)
 		newCount++
 		itm.ScanCount = strconv.Itoa(newCount)
 	}
