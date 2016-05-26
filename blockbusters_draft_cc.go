@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
-	"math/big"
 	"strconv"
 )
 
@@ -466,8 +465,9 @@ func (t *SimpleChaincode) addScanCount(stub *shim.ChaincodeStub, args []string) 
 	}
 
 	if itm.Status == STATUS_RETAILER {
-		var newCount Int
-		newCount.Add(strconv.Atoi(itm.ScanCount), 1)
+		var newCount int
+		newCount = strconv.Atoi(itm.ScanCount)
+		newCount++
 		itm.ScanCount = strconv.Itoa(newCount)
 	}
 
