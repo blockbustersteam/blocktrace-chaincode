@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"strconv"
 
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 )
@@ -345,12 +346,11 @@ func (t *SimpleChaincode) createItem(stub *shim.ChaincodeStub, args []string) ([
 
 	var it Item
 	it.Id = args[0]
-	it.Name = args[1]
 	it.CurrentOwner = args[1]
 	it.Manufacturer = args[1]
 	it.Barcode = args[2]
 	it.Status = STATUS_VERIFIED
-	it.ScanCount = 0
+	it.ScanCount = "0"
 
 	var tx Transaction
 	tx.VDate = args[3]
@@ -466,7 +466,9 @@ func (t *SimpleChaincode) addScanCount(stub *shim.ChaincodeStub, args []string) 
 	}
 
 	if itm.Status == STATUS_RETAILER {
-		itm.ScanCount = itmScanCount + 1
+		var newCount int
+		newCount = strconv.Atoi(itm.ScanCount) + 1
+		itm.ScanCount = strconv.Itoa(newCount)
 	}
 
 	return nil, nil
