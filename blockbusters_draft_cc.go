@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"strconv"
-
 	"github.com/hyperledger/fabric/core/chaincode/shim"
+	"math/big"
+	"strconv"
 )
 
 const MANUFACTURER = "MANUFACTURER"
@@ -467,7 +467,7 @@ func (t *SimpleChaincode) addScanCount(stub *shim.ChaincodeStub, args []string) 
 
 	if itm.Status == STATUS_RETAILER {
 		var newCount int
-		newCount = strconv.Atoi(itm.ScanCount) + 1
+		newCount.Add(strconv.Atoi(itm.ScanCount), 1)
 		itm.ScanCount = strconv.Itoa(newCount)
 	}
 
