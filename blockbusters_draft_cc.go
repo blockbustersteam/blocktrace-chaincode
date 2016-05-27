@@ -472,8 +472,8 @@ func (t *SimpleChaincode) addScanCount(stub *shim.ChaincodeStub, args []string) 
 	}
 
 	fmt.Println("Add Scan Count Commit Updates To Ledger")
-	iAsBytes, _ := json.Marshal(itm)
-	err = stub.PutState(itm.Id, iAsBytes)
+	itAsBytes, _ := json.Marshal(itm)
+	err = stub.PutState(itm.Id, itAsBytes)
 	if err != nil {
 		return nil, err
 	}
